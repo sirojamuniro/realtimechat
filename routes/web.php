@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Auth::routes();
+Route::group(['middleware' => 'auth'], function ($router) {
+    Route::get('/check',function(){
+        return session('chat');
+    })->name('check');
+    Route::get('/chat', [ChatController::class, 'chat'])->name('chat');
+    Route::post('/send', [ChatController::class, 'send'])->name('send');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+});
+
+
